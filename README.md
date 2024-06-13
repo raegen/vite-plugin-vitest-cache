@@ -51,7 +51,7 @@ Control which result states to cache. Possible values are "pass" and "fail".
 vitestCache({ states: ["pass"] });
 ```
 
-### Note from the author
+## Note from the author
 
 > [!CAUTION]
 > The purpose of this plugin is not to promote what are ultimately bad test practices. Your unit tests should _NOT_ be non-trivial, complex, resource-intensive, or otherwise slow. If you find yourself in need of such tests, first and foremost evaluate whether unit testing is what you need and look into integration, E2E testing etc.
