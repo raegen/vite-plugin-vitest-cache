@@ -47,11 +47,3 @@ Control which result states to cache. Possible values are "pass" and "fail".
 ```ts
 vitestCache({ states: ["pass"] });
 ```
-
-## Contributing
-
-Provide instructions on how to contribute to your project.
-
-## License
-
-Provide information about the license.
