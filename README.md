@@ -1,6 +1,6 @@
 # vite-plugin-vitest-cache
 
-Vitest cache provides test caching for [Vitest](https://github.com/vitest-dev/vitest). This vite plugin is useful for running non-trivial, complex, resource-heavy, or otherwise slow tests, as it enables running only the tests that are actually affected by code changes.
+Vitest cache provides test caching for [Vitest](https://github.com/vitest-dev/vitest). This vite plugin is useful for running non-trivial, complex, resource-intensive, or otherwise slow tests, as it enables running only the tests that are actually affected by code changes.
 
 ## How it Works
 
@@ -47,3 +47,6 @@ Control which result states to cache. Possible values are "pass" and "fail".
 ```ts
 vitestCache({ states: ["pass"] });
 ```
+
+> [!CAUTION]
+> The purpose of this plugin is not to promote what are ultimately bad test practices. Your unit tests should _NOT_ be non-trivial, complex, resource-intensive, or otherwise slow. If you find yourself in need of such tests, first and foremost evaluate whether unit testing is what you need and look into integration, E2E testing etc.
