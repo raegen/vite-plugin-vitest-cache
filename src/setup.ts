@@ -1,20 +1,18 @@
 import fg from 'fast-glob';
 import path from 'node:path';
-import { build } from 'vite';
 import type { GlobalSetupContext } from 'vitest/node';
+import { CacheEntry } from './cache';
+import { load } from './load';
 
-export default async function setup({ config }: GlobalSetupContext) {
-  const pattern = config.include.map((pattern) => path.resolve(process.cwd(), pattern));
+declare module 'vitest' {
+  export interface ProvidedContext {
+    [key: string]: CacheEntry;
+  }
+}
+
+export default async function setup({ config, provide }: GlobalSetupContext) {
+  const pattern = config.include.map((pattern) => path.resolve(config.root, pattern));
   const files = await fg(pattern);
 
-  await build({
-    configFile: path.resolve(__dirname, 'tests.vite.config.ts'),
-    build: {
-      outDir: config.caching.dir,
-      rollupOptions: {
-        input: files,
-      },
-    },
-    test: config,
-  });
+  await load(files, config).then((results) => results.forEach(([key, value]) => provide(key, value)));
 }

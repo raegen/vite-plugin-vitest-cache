@@ -1,6 +1,6 @@
 import { builtinModules } from 'node:module';
 import { createFilter, defineConfig, loadConfigFromFile } from 'vite';
-import testWriter from './plugin-test-writer';
+import writer from './writer';
 
 const isExternal = createFilter(['**/node_modules/**', '**/*.(svg|png|jpg|jpeg|s?css)']);
 
@@ -16,7 +16,7 @@ const userConfig = loadConfigFromFile(
 const config = userConfig.then(async (config) =>
   defineConfig({
     plugins: [
-      testWriter(),
+      writer(),
     ],
     publicDir: false,
     build: {
@@ -38,9 +38,9 @@ const config = userConfig.then(async (config) =>
         output: {
           format: 'module',
           preserveModules: true,
-          chunkFileNames: '[hash]',
-          assetFileNames: '[hash]',
-          entryFileNames: '[hash]',
+          chunkFileNames: '[hash:16]',
+          assetFileNames: '[hash:16]',
+          entryFileNames: '[hash:16]',
         },
         logLevel: 'silent',
       },

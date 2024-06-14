@@ -7,7 +7,7 @@ import { resolveReporters } from './reporters.js';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const defaults = {
-  outDir: '.tests',
+  dir: '.tests',
   states: ['pass'],
 };
 
