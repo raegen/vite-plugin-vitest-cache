@@ -19,7 +19,7 @@ class CachedRunner extends VitestTestRunner implements VitestRunner {
 
   async onBeforeCollect(paths: string[]) {
     const files = [];
-    for await (const test of paths) {
+    for (const test of paths) {
       const results = this.cache.restore(test);
 
       if (results) {
