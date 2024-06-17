@@ -2,46 +2,56 @@ import chalk from 'chalk';
 import { BuiltinReporterOptions, ReportersMap } from 'vitest/reporters';
 import { UserConfig } from 'vite';
 import { Reporter, Vitest } from 'vitest';
+import { getInjectKey } from './util.js';
 
 type ReporterWithOptions<Name extends string = string> = Name extends keyof BuiltinReporterOptions ? BuiltinReporterOptions[Name] extends never ? [Name, {}] : [Name, Partial<BuiltinReporterOptions[Name]>] : [Name, Record<string, unknown>];
 type ReporterOption = Reporter | ReporterWithOptions;
 
-const FLAG_COLOR = '#BE29EC';
-const CACHE_FLAG = chalk.hex(FLAG_COLOR)('[read from cache]');
+const COLOR = chalk.hex('#BE29EC');
+const format = (...args: string[]) => COLOR(`[${['read from cache', ...args].join(' ')}]`);
 
 type Logger = Vitest['logger'];
 
-interface SignedLogger extends Logger {
-  signature: string[];
+type ArgsMap = (...args: any[]) => any[] | void | false | undefined;
 
-  sign(value: string[]): void;
-}
-
-const createLogger = (logger: Logger) => Object.assign<Logger, Partial<SignedLogger>>(Object.create(logger), {
-  log(...args) {
-    return logger.log(...args, ...this.signature);
-  },
-  signature: [],
-  sign(value) {
-    this.signature = value;
-  },
+const createLogger = (logger: Logger, map: ArgsMap): Logger => Object.assign<Logger, Pick<Logger, 'log'>>(Object.create(logger), {
+  log: (...args) => logger.log.apply(logger, map(...args) || args),
 });
 
+interface ExtendedReporter extends Reporter {
+  ctx: Vitest;
+}
+
 const extendReporter = (reporter: Reporter): Reporter => {
+  const state = {
+    current: null,
+  };
   return Object.assign<Reporter, Reporter>(Object.create(reporter), {
-    onInit(ctx: Vitest) {
-      this.logger = ctx.logger = createLogger(ctx.logger);
+    onInit(this: ExtendedReporter, ctx: Vitest) {
+      this.ctx = Object.assign(ctx, { logger: createLogger(ctx.logger, (...args) => state.current?.cache && [...args, format()]) });
 
       return reporter.onInit(ctx);
     },
-    onTaskUpdate(packs) {
+    onTaskUpdate(this: ExtendedReporter, packs) {
       for (const pack of packs) {
         const [, result] = pack;
 
-        this.logger.sign(result.cache ? [CACHE_FLAG] : []);
+        state.current = result;
         reporter.onTaskUpdate?.([pack]);
-        this.logger.sign([]);
+        state.current = null;
       }
+    },
+    async onFinished(this: ExtendedReporter, ...args) {
+      const duration = this.ctx.getCoreWorkspaceProject().getProvidedContext()?.[getInjectKey('setup', 'duration')];
+      this.ctx.logger = createLogger(this.ctx.logger, (...args) => {
+        if (args.some((arg) => arg.match(/Duration/))) {
+          return [...args, format((duration / 1e3).toLocaleString('en-US', {
+            useGrouping: false,
+            maximumFractionDigits: 2,
+          }))];
+        }
+      });
+      await reporter.onFinished?.(...args);
     },
   });
 };

@@ -13,8 +13,19 @@ declare module 'vitest' {
 }
 
 declare module '@vitest/runner' {
+  export interface TaskBase {
+    originalDuration?: {
+      setupDuration?: number;
+      collectDuration?: number;
+      prepareDuration?: number;
+      environmentLoad?: number;
+    };
+
+  }
+
   export interface TaskResult {
     cache?: boolean;
+    originalDuration?: number;
   }
 }
 

@@ -1,5 +1,6 @@
 import fs from 'node:fs/promises';
 import { File, inject, Suite, Task } from 'vitest';
+import { getInjectKey } from './util.js';
 
 export interface CacheEntry {
   data: SerializedTask;
@@ -8,6 +9,8 @@ export interface CacheEntry {
 
 declare module 'vitest' {
   export interface ProvidedContext {
+    'vitest-cache:setup:duration': number;
+
     [key: string]: CacheEntry;
   }
 }
@@ -58,7 +61,7 @@ const deserializeTask = (task: SerializedTask): File | Suite | Task => {
 
 export class TaskCache {
   restore(file: string) {
-    const cache = inject(file);
+    const cache = inject(getInjectKey('file', file));
 
     if (!cache) {
       return null;
@@ -68,7 +71,7 @@ export class TaskCache {
   }
 
   save(task: Suite) {
-    const cache = inject(task.filepath);
+    const cache = inject(getInjectKey('file', task.filepath));
 
     if (!cache) {
       return null;
