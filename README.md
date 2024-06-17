@@ -35,7 +35,7 @@ export default defineConfig({
 
 Control where the caches are saved.
 
-`@default` ".tests" (relative from the project root)
+`@default` ".tests" (relative to the project root)
 
 ```ts
 vitestCache({ dir: ".tests" });
