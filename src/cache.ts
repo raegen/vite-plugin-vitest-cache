@@ -6,6 +6,12 @@ export interface CacheEntry {
   path: string;
 }
 
+declare module 'vitest' {
+  export interface ProvidedContext {
+    [key: string]: CacheEntry;
+  }
+}
+
 type SerializedTask = Task & {
   tasks: SerializedTask[];
 }
@@ -29,19 +35,25 @@ const serializeTask = (task: Task): SerializedTask => {
 const isFile = (task: Task | SerializedTask): task is File => 'filepath' in task;
 const isSuite = (task: Task | SerializedTask): task is Suite => task.type === 'suite';
 
-const deserializeTask = (task: SerializedTask) => {
-  const tasks = 'tasks' in task && task.tasks || [];
-  const file = task && isFile(task) ? task : undefined;
-  const suite = task && isSuite(task) ? task : undefined;
+const hasTasks = (task: Task | SerializedTask): task is Suite => 'tasks' in task && !!task.tasks?.length;
 
-  return {
-    ...task,
-    tasks: tasks.map((task) => deserializeTask({
+const deserializeTask = (task: SerializedTask): File | Suite | Task => {
+  const tasks = 'tasks' in task && task.tasks || undefined;
+
+  if (hasTasks(task)) {
+    const file = task && isFile(task) ? task : undefined;
+    const suite = task && isSuite(task) ? task : undefined;
+    return {
       ...task,
-      file,
-      suite,
-    })),
-  };
+      tasks: tasks.map((task) => deserializeTask({
+        ...task,
+        file,
+        suite,
+      })),
+    };
+  }
+
+  return task;
 };
 
 export class TaskCache {

@@ -1,14 +1,7 @@
 import fg from 'fast-glob';
 import path from 'node:path';
 import type { GlobalSetupContext } from 'vitest/node';
-import { CacheEntry } from './cache';
-import { load } from './load';
-
-declare module 'vitest' {
-  export interface ProvidedContext {
-    [key: string]: CacheEntry;
-  }
-}
+import { load } from './load.js';
 
 export default async function setup({ config, provide }: GlobalSetupContext) {
   const pattern = config.include.map((pattern) => path.resolve(config.root, pattern));

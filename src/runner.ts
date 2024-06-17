@@ -1,32 +1,11 @@
-import { File, Suite, TaskResultPack, updateTask, VitestRunner } from '@vitest/runner';
+import { Suite, updateTask, VitestRunner } from '@vitest/runner';
 import { getTasks } from '@vitest/runner/utils';
-import { ResolvedConfig, TaskResult } from 'vitest';
+import { ResolvedConfig, TaskResult, TaskState } from 'vitest';
 import { VitestTestRunner } from 'vitest/runners';
-import { TaskCache } from './cache';
-import { CacheOptions } from './options';
-
-declare module 'vitest' {
-  export interface ResolvedConfig {
-    caching: CacheOptions;
-  }
-}
-
-declare module '@vitest/runner' {
-  export interface TaskResult {
-    cache?: boolean;
-  }
-}
-
-declare module 'vitest/runners' {
-  export interface VitestTestRunner {
-    onCollected(files: File[]): unknown;
-
-    onTaskUpdate?(task: TaskResultPack[]): Promise<void>;
-  }
-}
+import { TaskCache } from './cache.js';
 
 class CachedRunner extends VitestTestRunner implements VitestRunner {
-  private states: CacheOptions['states'];
+  private states: TaskState[];
   private cache = new TaskCache();
 
   constructor(config: ResolvedConfig) {

@@ -3,9 +3,10 @@ import { OutputAsset, RollupOutput } from 'rollup';
 import { build } from 'vite';
 import { ResolvedConfig } from 'vitest';
 import { CacheEntry } from './cache';
+import { here } from './util.js';
 
 export const load = (files: string[], config: ResolvedConfig) => build({
-  configFile: path.resolve(__dirname, 'tests.vite.config.ts'),
+  configFile: here('./tests.vite.config'),
   build: {
     outDir: config.caching.dir,
     rollupOptions: {
