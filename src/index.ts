@@ -49,7 +49,7 @@ export interface CacheOptions {
   states?: TaskState[]; // default: ['pass'] by default only passing tests are cached, failing tests are always rerun
 }
 
-export const vitestCache = (options: CacheOptions): Plugin => ({
+export const vitestCache = (options?: CacheOptions): Plugin => ({
   name: 'vitest-cache',
   config: async (config) => ({
     test: {
