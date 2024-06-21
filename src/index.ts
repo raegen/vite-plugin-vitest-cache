@@ -1,6 +1,3 @@
-/// <reference types="vitest/config" />
-
-import 'vitest/reporters';
 import type { Plugin } from 'vite';
 import type { InlineConfig, TaskState } from 'vitest';
 import { File } from '@vitest/runner';
@@ -46,7 +43,7 @@ export interface CacheOptions {
 
 export const vitestCache = (options?: CacheOptions): Plugin => ({
   name: 'vitest-cache',
-  config: async (config) => ({
+  config: async () => ({
     test: {
       vCache: {
         ...defaults,
@@ -54,7 +51,6 @@ export const vitestCache = (options?: CacheOptions): Plugin => ({
       },
       runner: here('./runner'),
       globalSetup: here('./setup'),
-      reporters: [...[config.test.reporters].flat(), here('./reporter')],
     },
   }),
 });
