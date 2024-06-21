@@ -8,12 +8,11 @@ import { here } from './util.js';
 export const load = (files: string[], config: ResolvedConfig) => build({
   configFile: here('./tests.vite.config'),
   build: {
-    outDir: config.caching.dir,
+    outDir: config.vCache.dir,
     rollupOptions: {
       input: files,
     },
   },
-  test: config,
 }).then(
   ({ output }: RollupOutput) =>
     output.map(({ fileName, name, source }: OutputAsset): [string, CacheEntry] =>

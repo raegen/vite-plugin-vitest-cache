@@ -29,7 +29,7 @@ const config = userConfig.then(async (config) =>
       rollupOptions: {
         treeshake: {
           preset: 'smallest',
-          moduleSideEffects: false,
+          moduleSideEffects: true,
         },
         preserveEntrySignatures: 'strict',
         external: (source) => {

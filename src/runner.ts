@@ -1,47 +1,15 @@
-import { File, Suite, Task, updateTask, VitestRunner } from '@vitest/runner';
-import { getTasks } from '@vitest/runner/utils';
+import { File, updateTask, VitestRunner } from '@vitest/runner';
 import { ResolvedConfig, TaskResult, TaskState } from 'vitest';
 import { VitestTestRunner } from 'vitest/runners';
 import { TaskCache } from './cache.js';
 
-const mapDuration = (task: File | Suite | Task) => {
-  if (!task.result.originalDuration) {
-    task.result.originalDuration = task.result.duration;
-    task.result.duration = 0;
-  }
-
-  if (task.originalDuration) {
-    return task;
-  }
-
-  task.originalDuration = {};
-  if ('setupDuration' in task) {
-    task.originalDuration.setupDuration = task.setupDuration;
-    task.setupDuration = 0;
-  }
-  if ('collectDuration' in task) {
-    task.originalDuration.collectDuration = task.collectDuration;
-    task.collectDuration = 0;
-  }
-  if ('prepareDuration' in task) {
-    task.originalDuration.prepareDuration = task.prepareDuration;
-    task.prepareDuration = 0;
-  }
-  if ('environmentLoad' in task) {
-    task.originalDuration.environmentLoad = task.environmentLoad;
-    task.environmentLoad = 0;
-  }
-
-  return task;
-};
-
 class CachedRunner extends VitestTestRunner implements VitestRunner {
   private states: TaskState[];
-  private cache = new TaskCache();
+  private cache = new TaskCache<File>();
 
   constructor(config: ResolvedConfig) {
     super(config);
-    this.states = config.caching.states;
+    this.states = config.vCache.states;
   }
 
   shouldCache(result: TaskResult): boolean {
@@ -51,29 +19,27 @@ class CachedRunner extends VitestTestRunner implements VitestRunner {
   async onBeforeCollect(paths: string[]) {
     const files = [];
     for (const test of paths) {
-      const results = this.cache.restore(test);
-
-      if (results) {
+      const cached = this.cache.restore(test);
+      if (cached) {
         paths.splice(paths.indexOf(test), 1);
 
-        for (const task of getTasks(results)) {
-          updateTask(mapDuration(task), this);
-        }
+        updateTask(cached, this);
 
-        files.push(results);
+        files.push(cached);
       }
     }
 
     this.onCollected?.(files);
   }
 
-  async onAfterRunSuite(suite: Suite) {
-    if (suite.filepath) {
-      if (this.shouldCache(suite.result)) {
-        await this.cache.save(suite);
+  async onAfterRunFiles(files?: File[]) {
+    for await (const file of files) {
+      if (this.shouldCache(file.result)) {
+        await this.cache.save(file.filepath, file);
       }
     }
-    return super.onAfterRunSuite(suite);
+
+    return super.onAfterRunFiles(files);
   }
 }
 

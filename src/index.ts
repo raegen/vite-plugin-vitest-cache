@@ -1,31 +1,26 @@
-/// <reference types="vitest" />
+/// <reference types="vitest/config" />
 
-import { resolveReporters } from './reporters.js';
-import { Plugin } from 'vite';
-import { TaskState } from 'vitest';
-import { File, TaskResultPack } from '@vitest/runner';
+import 'vitest/reporters';
+import type { Plugin } from 'vite';
+import type { InlineConfig, TaskState } from 'vitest';
+import { File } from '@vitest/runner';
 import { here } from './util.js';
+
+declare module 'vite' {
+  export interface UserConfig {
+    test?: InlineConfig;
+  }
+}
 
 declare module 'vitest' {
   export interface ResolvedConfig {
-    caching: CacheOptions;
+    vCache: CacheOptions;
   }
 }
 
 declare module '@vitest/runner' {
   export interface TaskBase {
-    originalDuration?: {
-      setupDuration?: number;
-      collectDuration?: number;
-      prepareDuration?: number;
-      environmentLoad?: number;
-    };
-
-  }
-
-  export interface TaskResult {
     cache?: boolean;
-    originalDuration?: number;
   }
 }
 
@@ -33,7 +28,7 @@ declare module 'vitest/runners' {
   export interface VitestTestRunner {
     onCollected(files: File[]): unknown;
 
-    onTaskUpdate?(task: TaskResultPack[]): Promise<void>;
+    onAfterRunFiles(files: File[]): Promise<void>;
   }
 }
 
@@ -53,13 +48,13 @@ export const vitestCache = (options?: CacheOptions): Plugin => ({
   name: 'vitest-cache',
   config: async (config) => ({
     test: {
-      caching: {
+      vCache: {
         ...defaults,
         ...options,
       },
       runner: here('./runner'),
       globalSetup: here('./setup'),
-      reporters: await resolveReporters(config),
+      reporters: [...[config.test.reporters].flat(), here('./reporter')],
     },
   }),
 });
