@@ -2,7 +2,7 @@ import { File, updateTask, VitestRunner } from '@vitest/runner';
 import { ResolvedConfig, TaskResult, TaskState } from 'vitest';
 import { VitestTestRunner } from 'vitest/runners';
 import { TaskCache } from './cache.js';
-import { log } from './logger';
+import { log } from './logger.js';
 
 class CachedRunner extends VitestTestRunner implements VitestRunner {
   private states: TaskState[];
