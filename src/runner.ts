@@ -51,7 +51,9 @@ class CachedRunner extends VitestTestRunner implements VitestRunner {
       }
     }
 
-    log(files);
+    if (files.length) {
+      log(files);
+    }
 
     this.onCollected?.(files);
   }
