@@ -1,6 +1,6 @@
 {
   "name": "@raegen/vite-plugin-vitest-cache",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Run Vitest with test result caching.",
   "repository": {
     "type": "git",

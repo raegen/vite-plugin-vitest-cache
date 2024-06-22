@@ -2,11 +2,12 @@ import { File, updateTask, VitestRunner } from '@vitest/runner';
 import { ResolvedConfig, TaskResult, TaskState } from 'vitest';
 import { VitestTestRunner } from 'vitest/runners';
 import { TaskCache } from './cache.js';
-import { log } from './logger.js';
+import { logger } from './logger.js';
 
 class CachedRunner extends VitestTestRunner implements VitestRunner {
   private states: TaskState[];
   private cache = new TaskCache<File>();
+  private restored: File[] = [];
 
   constructor(config: ResolvedConfig) {
     super(config);
@@ -18,7 +19,6 @@ class CachedRunner extends VitestTestRunner implements VitestRunner {
   }
 
   async onBeforeCollect(paths: string[]) {
-    const files = [];
     for (const test of paths) {
       const cached = this.cache.restore(test);
       if (cached) {
@@ -26,15 +26,11 @@ class CachedRunner extends VitestTestRunner implements VitestRunner {
 
         updateTask(cached, this);
 
-        files.push(cached);
+        this.restored.push(cached);
       }
     }
 
-    if (files.length) {
-      log(files);
-    }
-
-    this.onCollected?.(files);
+    this.onCollected?.(this.restored);
   }
 
   async onAfterRunFiles(files?: File[]) {
@@ -44,7 +40,11 @@ class CachedRunner extends VitestTestRunner implements VitestRunner {
       }
     }
 
-    return super.onAfterRunFiles(files);
+    await super.onAfterRunFiles(files);
+
+    if (!this.config.vCache.silent && this.restored.length) {
+      logger.log(this.restored);
+    }
   }
 }
 

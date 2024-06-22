@@ -1,4 +1,4 @@
-# vite-plugin-vitest-cache [![npm](https://img.shields.io/npm/v/@raegen/vite-plugin-vitest-cache)](https://www.npmjs.com/package/@raegen/vite-plugin-vitest-cache)
+# vite-plugin-vitest-cache [![npm](https://img.shields.io/npm/v/@raegen/vite-plugin-vitest-cache)](https://www.npmjs.com/package/@raegen/vite-plugin-vitest-cache) (vCache)
 
 ![vitest-cache-example](https://github.com/raegen/vite-plugin-vitest-cache/assets/6546341/c9abadf6-c3d5-40d0-b128-5e7980211b58)
 
@@ -51,6 +51,16 @@ Control which result states to cache. Possible values are "pass" and "fail".
 
 ```ts
 vitestCache({ states: ["pass"] });
+```
+
+### silent
+
+Control whether vCache should write any logs to stdout.
+
+`@default` false
+
+```ts
+vitestCache({ silent: true });
 ```
 
 ## Note

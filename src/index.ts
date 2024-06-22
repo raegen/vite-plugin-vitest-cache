@@ -32,6 +32,7 @@ declare module 'vitest/runners' {
 const defaults = {
   dir: '.tests',
   states: ['pass'],
+  silent: false
 };
 
 export interface CacheOptions {
@@ -39,6 +40,7 @@ export interface CacheOptions {
   dir?: string; // default: '.tests'
   /* default: ['pass'] - which task states (test outcomes) should be cached */
   states?: TaskState[]; // default: ['pass'] by default only passing tests are cached, failing tests are always rerun
+  silent?: boolean; // default: false - if true, vCache will not write anything to stdout
 }
 
 export const vitestCache = (options?: CacheOptions): Plugin => ({
