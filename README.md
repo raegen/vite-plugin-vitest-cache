@@ -31,6 +31,40 @@ export default defineConfig({
 });
 ```
 
+### Usage with CI
+
+The only potential obstacle here, is cache persistence across runs, contexts. Since we use filesystem for cache storage, it's just a matter of configuring the respective CI cache to include the paths used by vCache (See [dir](https://github.com/raegen/vite-plugin-vitest-cache/edit/main/README.md#dir)).
+
+#### Github Actions
+```yaml
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: vCache
+      id: v-cache
+      uses: actions/cache@v4
+      with:
+        path: **/.tests
+        key: v-cache
+
+    - name: Test
+      run: ...run tests
+```
+
+#### Gitlab CI/CD
+```yaml
+job:
+  script: ...run tests
+  artifacts:
+    name: v-cache
+    paths:
+      - **/.tests
+```
+
 ## Options
 
 ### dir
