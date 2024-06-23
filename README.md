@@ -1,6 +1,6 @@
 # vite-plugin-vitest-cache [![npm](https://img.shields.io/npm/v/@raegen/vite-plugin-vitest-cache)](https://www.npmjs.com/package/@raegen/vite-plugin-vitest-cache) (vCache)
 
-![vitest-cache-example](https://github.com/raegen/vite-plugin-vitest-cache/assets/6546341/6cc15c62-a48f-46ba-9b1b-ea27097c6e34)
+![vitest-cache-example](https://github.com/raegen/vite-plugin-vitest-cache/assets/6546341/0a985891-4a16-4e28-90ce-50fa36322829)
 
 > [!NOTE]
 > In vitest terms, the caching covers: transformation, setup, collection, running, environment and preparation of tests. All of those are skipped for cached entries.
