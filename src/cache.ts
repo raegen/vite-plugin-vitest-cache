@@ -6,6 +6,7 @@ import { deserialize, serialize, SerializedRecord } from '@ungap/structured-clon
 export interface CacheEntry {
   data: SerializedRecord;
   path: string;
+  duration: number;
 }
 
 declare module 'vitest' {
@@ -26,6 +27,14 @@ export class TaskCache<T extends { cache?: boolean }> {
   readonly flag = (cache: T) => {
     return Object.assign(cache, { cache: true });
   };
+
+  cost(key: string) {
+    const cache = inject(getInjectKey('key', key));
+    if (!cache) {
+      return null;
+    }
+    return Math.round(cache.duration);
+  }
 
   restore(key: string) {
     const cache = inject(getInjectKey('key', key));

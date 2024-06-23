@@ -1,50 +1,42 @@
-import { File, updateTask, VitestRunner } from '@vitest/runner';
-import { ResolvedConfig, TaskResult, TaskState } from 'vitest';
+import { File, Task, updateTask, VitestRunner } from '@vitest/runner';
 import { VitestTestRunner } from 'vitest/runners';
 import { TaskCache } from './cache.js';
-import { logger } from './logger.js';
+import { formatDim } from './util.js';
 
 class CachedRunner extends VitestTestRunner implements VitestRunner {
-  private states: TaskState[];
   private cache = new TaskCache<File>();
-  private restored: File[] = [];
 
-  constructor(config: ResolvedConfig) {
-    super(config);
-    this.states = config.vCache.states;
+  shouldCache(task: Task): boolean {
+    return this.config.vCache.states.includes(task.result.state);
   }
 
-  shouldCache(result: TaskResult): boolean {
-    return this.states.includes(result.state);
+  shouldLog() {
+    return !this.config.vCache.silent;
   }
 
   async onBeforeCollect(paths: string[]) {
+    const restored = [];
     for (const test of paths) {
       const cached = this.cache.restore(test);
       if (cached) {
         paths.splice(paths.indexOf(test), 1);
-
+        if (this.shouldLog()) {
+          cached.name = `${formatDim(`[cache ${this.cache.cost(test)}ms]`)} ${cached.name}`;
+        }
         updateTask(cached, this);
-
-        this.restored.push(cached);
+        restored.push(cached);
       }
     }
-
-    this.onCollected?.(this.restored);
+    this.onCollected?.(restored);
   }
 
   async onAfterRunFiles(files?: File[]) {
     for await (const file of files) {
-      if (this.shouldCache(file.result)) {
+      if (this.shouldCache(file)) {
         await this.cache.save(file.filepath, file);
       }
     }
-
-    await super.onAfterRunFiles(files);
-
-    if (!this.config.vCache.silent && this.restored.length) {
-      logger.log(this.restored);
-    }
+    return super.onAfterRunFiles(files);
   }
 }
 
