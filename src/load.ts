@@ -1,12 +1,11 @@
 import path from 'node:path';
-import { OutputAsset, RollupOutput } from 'rollup';
+import { OutputAsset, PluginContext, RollupOutput } from 'rollup';
 import { build } from 'vite';
 import type { ResolvedConfig } from 'vitest';
-import type { CacheEntry } from './cache';
 import { here } from './util.js';
 
 export const load = (files: string[], config: ResolvedConfig) => {
-  const durations = new Map<string, number>();
+  const dir = path.resolve(config.vCache.dir);
 
   return build({
     configFile: here('./tests.vite.config'),
@@ -16,34 +15,5 @@ export const load = (files: string[], config: ResolvedConfig) => {
         input: files,
       },
     },
-    plugins: [{
-      name: 'vitest-cache:measure:start',
-      enforce: 'pre',
-      resolveId(id, _, { isEntry }) {
-        if (isEntry) {
-          durations.set(id, performance.now());
-        }
-      },
-    }, {
-      name: 'vitest-cache:measure:end',
-      moduleParsed(module) {
-        if (module.isEntry) {
-          durations.set(module.id, performance.now() - durations.get(module.id));
-        }
-      },
-    }],
-  }).then(
-    ({ output }: RollupOutput) =>
-      output.map(({ fileName, name, source }: OutputAsset): [string, CacheEntry] => {
-        const id = files.find((f) => f.endsWith(path.dirname(fileName)));
-        return [
-          id,
-          {
-            data: JSON.parse(`${source}`),
-            path: name,
-            duration: durations.get(id),
-          },
-        ];
-      }),
-  );
+  }).then(({ output }: RollupOutput) => Object.fromEntries(output.filter((entry): entry is OutputAsset => entry.type === 'asset').map((cache) => [path.resolve(dir, path.dirname(cache.fileName)), JSON.parse(`${cache.source}`)])));
 };

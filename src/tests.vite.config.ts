@@ -1,6 +1,7 @@
 import { builtinModules } from 'node:module';
 import { createFilter, defineConfig, loadConfigFromFile } from 'vite';
 import writer from './writer';
+import { PluginContext } from 'rollup';
 
 const isExternal = createFilter(['**/node_modules/**', '**/*.(svg|png|jpg|jpeg|s?css)']);
 
@@ -16,6 +17,28 @@ const userConfig = loadConfigFromFile(
 const config = userConfig.then(async (config) =>
   defineConfig({
     plugins: [
+      {
+        name: 'v-cache:measure:start',
+        enforce: 'pre',
+        resolveId(id, _, { isEntry }) {
+          if (isEntry) {
+            return {
+              id,
+              meta: {
+                start: performance.now(),
+              },
+            };
+          }
+        },
+      }, {
+        name: 'v-cache:measure:end',
+        moduleParsed(this: PluginContext, module) {
+          if (module.isEntry) {
+            module.meta.end = performance.now();
+            module.meta.cost = module.meta.end - module.meta.start;
+          }
+        },
+      },
       writer(),
     ],
     publicDir: false,

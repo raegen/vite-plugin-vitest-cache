@@ -2,6 +2,7 @@ import type { Plugin } from 'vite';
 import type { InlineConfig, TaskState } from 'vitest';
 import { File } from '@vitest/runner';
 import { here } from './util.js';
+import type { CacheStrategy } from './strategy.js';
 
 declare module 'vite' {
   export interface UserConfig {
@@ -32,7 +33,7 @@ declare module 'vitest/runners' {
 const defaults = {
   dir: '.tests',
   states: ['pass'],
-  silent: false
+  silent: false,
 };
 
 export interface CacheOptions {
@@ -41,6 +42,7 @@ export interface CacheOptions {
   /* default: ['pass'] - which task states (test outcomes) should be cached */
   states?: TaskState[]; // default: ['pass'] by default only passing tests are cached, failing tests are always rerun
   silent?: boolean; // default: false - if true, vCache will not write anything to stdout
+  strategy?: CacheStrategy;
 }
 
 export const vitestCache = (options?: CacheOptions): Plugin => ({

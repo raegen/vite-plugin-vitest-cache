@@ -21,7 +21,8 @@ class CachedRunner extends VitestTestRunner implements VitestRunner {
       if (cached) {
         paths.splice(paths.indexOf(test), 1);
         if (this.shouldLog()) {
-          cached.name = `${formatDim(`[cache ${this.cache.cost(test)}ms]`)} ${cached.name}`;
+          cached.name = `${formatDim(`[cache]`)} ${cached.name}`;
+          cached.result.duration = this.cache.cost(test);
         }
         updateTask(cached, this);
         restored.push(cached);

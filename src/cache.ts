@@ -1,23 +1,25 @@
 import fs from 'node:fs/promises';
-import { inject } from 'vitest';
-import { getInjectKey } from './util.js';
 import { deserialize, serialize, SerializedRecord } from '@ungap/structured-clone';
+import { inject } from 'vitest';
 
 export interface CacheEntry {
   data: SerializedRecord;
   path: string;
-  duration: number;
+  cost: number;
+  timestamp: number;
 }
 
 declare module 'vitest' {
   export interface ProvidedContext {
-    'vitest-cache:setup:duration': number;
-
-    [key: `vitest-cache:key:${string}`]: CacheEntry;
+    'v-cache': {
+      [key: string]: CacheEntry;
+    };
   }
 }
 
 export class TaskCache<T extends { cache?: boolean }> {
+  store = inject('v-cache');
+
   constructor(flag?: (cache: T) => T & { cache: true }) {
     if (flag) {
       this.flag = flag;
@@ -29,15 +31,15 @@ export class TaskCache<T extends { cache?: boolean }> {
   };
 
   cost(key: string) {
-    const cache = inject(getInjectKey('key', key));
+    const cache = this.store[key];
     if (!cache) {
       return null;
     }
-    return Math.round(cache.duration);
+    return Math.round(cache.cost);
   }
 
   restore(key: string) {
-    const cache = inject(getInjectKey('key', key));
+    const cache = this.store[key];
 
     if (!cache) {
       return null;
@@ -46,15 +48,19 @@ export class TaskCache<T extends { cache?: boolean }> {
     return cache.data ? this.flag(deserialize(cache.data)) : null;
   }
 
-  save(key: string, data: T) {
-    const cache = inject(getInjectKey('key', key));
+  async save(key: string, data: T) {
+    const cache = this.store[key];
 
     if (!cache) {
       return null;
     }
 
-    return fs.writeFile(cache.path, JSON.stringify(serialize(data)), {
+    return fs.writeFile(cache.path, JSON.stringify({
+      ...cache,
+      data: serialize(data),
+    }), {
       encoding: 'utf-8',
     });
   }
+
 }
