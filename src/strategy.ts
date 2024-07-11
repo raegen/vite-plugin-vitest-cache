@@ -26,4 +26,6 @@ export const applyStrategy = async (entries: CacheEntry[], strategy: CacheStrate
   for await (const path of remove) {
     await fs.rm(path, { recursive: true });
   }
+
+  return remove;
 };

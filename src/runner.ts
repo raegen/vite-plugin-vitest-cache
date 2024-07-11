@@ -1,7 +1,7 @@
 import { File, Task, updateTask, VitestRunner } from '@vitest/runner';
 import { VitestTestRunner } from 'vitest/runners';
 import { TaskCache } from './cache.js';
-import { formatDim } from './util.js';
+import { format } from './util.js';
 
 class CachedRunner extends VitestTestRunner implements VitestRunner {
   private cache = new TaskCache<File>();
@@ -21,7 +21,7 @@ class CachedRunner extends VitestTestRunner implements VitestRunner {
       if (cached) {
         paths.splice(paths.indexOf(test), 1);
         if (this.shouldLog()) {
-          cached.name = `${formatDim(`[cache]`)} ${cached.name}`;
+          cached.name = `\b\b${format(`⛁`)} ${cached.name}`;
           cached.result.duration = this.cache.cost(test);
         }
         updateTask(cached, this);
