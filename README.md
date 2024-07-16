@@ -3,9 +3,11 @@
 ![vitest-cache-example](https://github.com/raegen/vite-plugin-vitest-cache/assets/6546341/0a985891-4a16-4e28-90ce-50fa36322829)
 
 > [!NOTE]
-> In vitest terms, the caching covers: transformation, setup, collection, running, environment and preparation of tests. All of those are skipped for cached entries.
+> In vitest terms, the caching covers: transformation, setup, collection, running, environment and preparation of tests. All of those are skipped for cached entries in exchange for a small price of calculating the hashes.
 
-Vitest cache provides test caching for [Vitest](https://github.com/vitest-dev/vitest). This vite plugin is useful for running non-trivial, complex, resource-intensive, or otherwise slow tests, as it enables running only the tests that are actually affected by code changes.
+vCache provides test caching for [Vitest](https://github.com/vitest-dev/vitest). This plugin is useful for:
+- running non-trivial, complex, resource-intensive, or otherwise slow tests, as it enables running only the tests that are actually affected by code changes
+- monorepos, as it avoids the complications and limitations stemming from complex package dependency trees by ignoring module boundaries and treating everything as sources, calculating hashes from tree shaken code.
 
 ## How it Works
 
@@ -24,10 +26,10 @@ yarn add --dev @raegen/vite-plugin-vitest-cache
 
 ```ts
 import { defineConfig } from "vitest";
-import vitestCache from '@raegen/vite-plugin-vitest-cache';
+import vCache from '@raegen/vite-plugin-vitest-cache';
 
 export default defineConfig({
-  plugins: [vitestCache()],
+  plugins: [vCache()],
 });
 ```
 
@@ -74,7 +76,7 @@ Control where the caches are saved.
 `@default` ".tests" (relative to the project root)
 
 ```ts
-vitestCache({ dir: ".tests" });
+vCache({ dir: ".tests" });
 ```
 
 ### states
@@ -84,7 +86,7 @@ Control which result states to cache. Possible values are "pass" and "fail".
 `@default` ["pass"]
 
 ```ts
-vitestCache({ states: ["pass"] });
+vCache({ states: ["pass"] });
 ```
 
 ### silent
@@ -94,8 +96,35 @@ Control whether vCache should write any logs to stdout.
 `@default` false
 
 ```ts
-vitestCache({ silent: true });
+vCache({ silent: true });
 ```
+
+### strategy
+
+```ts
+interface ExtendedCacheEntry {
+  data: SerializedRecord;
+  path: string;
+  cost: number;
+  timestamp: number;
+  size: number;
+}
+
+interface CacheStrategy {
+  (entries: ExtendedCacheEntry[]): ExtendedCacheEntry[];
+}
+```
+
+Cache cleanup strategy. We can't have it grow forever, can we? Strategy is effectively a reducer for cache entries. It is invoked for each existing cache id (test file), with an array of currently stored cache entries (`entries: ExtendedCacheEntry[]`) for that id and should return an array of cache entries to be stored. (all the cache entries not present in the returned array are removed).
+
+`@default` stores last 3 USED cached entries
+
+```ts
+vCache({
+  strategy: (entries: ExtendedCacheEntry[]) => entries.sort((a, b) => b.timestamp - a.timestamp).slice(0, 3)
+})
+```
+
 
 ## Note
 
