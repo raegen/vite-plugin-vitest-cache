@@ -22,7 +22,7 @@ class CachedRunner extends VitestTestRunner implements VitestRunner {
         paths.splice(paths.indexOf(test), 1);
         if (this.shouldLog()) {
           cached.name = `\b\b${format(`⛁`)} ${cached.name}`;
-          cached.result.duration = this.cache.cost(test);
+          cached.result.duration = 0;
         }
         updateTask(cached, this);
         restored.push(cached);

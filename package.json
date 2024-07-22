@@ -1,6 +1,6 @@
 {
   "name": "@raegen/vite-plugin-vitest-cache",
-  "version": "0.2.7",
+  "version": "0.2.8",
   "description": "Run Vitest with test result caching.",
   "repository": {
     "type": "git",
@@ -37,8 +37,8 @@
     "vite": "^5.3.1"
   },
   "peerDependencies": {
-    "@vitest/runner": "^1.1.0",
-    "vitest": "^1.1.0"
+    "@vitest/runner": ">=1.1.0",
+    "vitest": ">=1.1.0"
   },
   "devDependencies": {
     "@types/node": "^20.10.0",
