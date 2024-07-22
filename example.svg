@@ -42,15 +42,15 @@
  <span style="color:#d75fff;">⛁</span> <span class="blur">src/iults/siacnmgpa/otleloolrtpSmeTcFpwteaisoengOteplU.spec.tsx</span>  <span
       style="color: #5E636AFF">(7 tests)</span>
  <span style="color:lime;">✓</span> <span class="blur">src/tnopseconm/PodocagFeevrkerePsFaaieomwbL/tnrIo/rineisGttLeg.spec.tsx</span>  <span
-      style="color: #5E636AFF">(3 tests)</span>
+      style="color: #5E636AFF">(3 tests)</span> <span style="color: #d29922">29533ms</span>
  <span style="color:lime;">✓</span> <span class="blur">src/spaeg/SD/eCmiomnistu/netgSsem/esgLstSinemt/StLsenigestm.spec.tsx</span>  <span
-      style="color: #5E636AFF">(2 tests)</span>
+      style="color: #5E636AFF">(2 tests)</span> <span style="color: #d29922">6995ms</span>
  <span style="color:lime;">✓</span> <span class="blur">src/ltuis/s_tet__s_/rtoamfaeDt.spec.tsx</span>  <span
-      style="color: #5E636AFF">(4 tests)</span>
+      style="color: #5E636AFF">(4 tests)</span> <span style="color: #d29922">5208ms</span>
  <span style="color:lime;">✓</span> <span class="blur">src/gsape/SD/snagpiamC/lCpawoimFgna/Mnai/lwoF/sdeno/aedTlNimDyoee/st_t_e_s_/lisut.spec.tsx</span>  <span
-      style="color: #5E636AFF">(5 tests)</span>
+      style="color: #5E636AFF">(5 tests)</span> <span style="color: #d29922">21713ms</span>
  <span style="color:lime;">✓</span> <span class="blur">src/pAp.spec.tsx</span>  <span
-      style="color: #5E636AFF">(9 tests)</span>
+      style="color: #5E636AFF">(9 tests)</span> <span style="color: #d29922">12001ms</span>
  <span style="color:#d75fff;">⛁</span> <span class="blur">src/pgsae/SD/pnagamCsi/ayCnaraummpgimS/tomsnncpoe/woFl/oensmpotcn/opwolFlU/sulit.spec.tsx</span>  <span
       style="color: #5E636AFF">(4 tests)</span>
  <span style="color: #5E636AFF">Test Files</span>  <span style="font-weight:bold;"></span><span
@@ -62,6 +62,6 @@
    <span style="color: #5E636AFF">Start at</span>  <span>12:42:04</span>
    <span style="color: #5E636AFF">Duration</span>  <span>10.36s</span> <span style="color: #5E636AFF">(transform 32ms, setup 129.76s, collect 307.15s, tests 0ms, environment 1.31s, prepare 17.14s)</span>
 <span style="color:#d75fff;">[vCache]</span> <span
-      style="color:rgb(215 95 255 / 50%)">66/66 files read from cache</span></pre></div>
+      style="color:rgb(215 95 255 / 50%)">61/66 files read from cache</span></pre></div>
   </foreignObject>
 </svg>
