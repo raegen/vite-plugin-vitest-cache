@@ -1,6 +1,6 @@
 # vite-plugin-vitest-cache [![npm](https://img.shields.io/npm/v/@raegen/vite-plugin-vitest-cache)](https://www.npmjs.com/package/@raegen/vite-plugin-vitest-cache) (vCache)
 
-![vitest-cache-example](https://raw.githubusercontent.com/raegen/vite-plugin-vitest-cache/90c24c97adbad18f010a6918f6d3a94c8f444152/example.svg)
+![vitest-cache-example](example.svg)
 
 
 > [!NOTE]
