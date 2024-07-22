@@ -1,7 +1,7 @@
 <svg width="100%" height="100%" style="background: black" viewBox="0 0 1024 700" xmlns="http://www.w3.org/2000/svg">
   <foreignObject width="1024" height="700">
     <meta charset="utf-8" />
-    <div style="color:white; background-color:black; line-height: 20px; font-size: 12px">
+    <div style="color:white; background-color:black; line-height: 20px; font-size: 12px" xmlns="http://www.w3.org/1999/xhtml">
     <pre>
 <span style="color:#d75fff;">[vCache]</span> <span style="color:rgb(215 95 255 / 50%)">0.2.8</span>
 <span style="color:#d75fff;">[vCache]</span> <span style="color:rgb(215 95 255 / 50%)">built hashes in 6.02s</span>
