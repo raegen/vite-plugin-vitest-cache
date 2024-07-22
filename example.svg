@@ -1,9 +1,8 @@
-<svg width="100%" height="100%" style="background: black" viewBox="0 0 1024 700" xmlns="http://www.w3.org/2000/svg">
+<svg width="100%" height="100%" style="background: #0d1116" viewBox="0 0 1024 700" xmlns="http://www.w3.org/2000/svg">
   <foreignObject width="1024" height="700">
     <meta charset="utf-8" />
     <div style="color:white; background-color:black; line-height: 20px; font-size: 12px" xmlns="http://www.w3.org/1999/xhtml">
-    <pre>
-<span style="color:#d75fff;">[vCache]</span> <span style="color:rgb(215 95 255 / 50%)">0.2.8</span>
+    <pre><span style="color:#d75fff;">[vCache]</span> <span style="color:rgb(215 95 255 / 50%)">0.2.8</span>
 <span style="color:#d75fff;">[vCache]</span> <span style="color:rgb(215 95 255 / 50%)">built hashes in 6.02s</span>
  <span style="color:#d75fff;">⛁</span> <span
       class="blur">src/epsga/SD/siCueitommn/ssoMsnii/ormF/mFro.spec.tsx</span>  <span
@@ -64,8 +63,6 @@
    <span style="color: #5E636AFF">Start at</span>  <span>12:42:04</span>
    <span style="color: #5E636AFF">Duration</span>  <span>10.36s</span> <span style="color: #5E636AFF">(transform 32ms, setup 129.76s, collect 307.15s, tests 0ms, environment 1.31s, prepare 17.14s)</span>
 <span style="color:#d75fff;">[vCache]</span> <span
-      style="color:rgb(215 95 255 / 50%)">66/66 files read from cache</span>
-</pre>
-    </div>
+      style="color:rgb(215 95 255 / 50%)">66/66 files read from cache</span></pre></div>
   </foreignObject>
 </svg>
