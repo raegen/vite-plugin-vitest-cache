@@ -2,7 +2,7 @@
   <foreignObject width="950" height="660">
     <meta charset="utf-8" />
     <div style="color:white; background-color: #0d1116; line-height: 20px; font-size: 12px; padding-left: 16px" xmlns="http://www.w3.org/1999/xhtml">
-    <pre><span style="color:#d75fff;">[vCache]</span> <span style="color:rgb(215 95 255 / 50%)">0.2.8</span>
+    <pre><span style="color:#d75fff;">[vCache]</span> <span style="color:rgb(215 95 255 / 50%)">0.3.0</span>
 <span style="color:#d75fff;">[vCache]</span> <span style="color:rgb(215 95 255 / 50%)">built hashes in 6.02s</span>
  <span style="color:#d75fff;">⛁</span> <span
       class="blur">src/epsga/SD/siCueitommn/ssoMsnii/ormF/mFro.spec.tsx</span>  <span
@@ -13,7 +13,8 @@
       style="color: #5E636AFF">(8 tests)</span>
  <span style="color:#d75fff;">⛁</span> <span class="blur">src/pgeas/DS/msgpinCaa/gatppnsaimCSe/atppeSugaimnC/lUFoprwFlmoo/mtTTWcepDAottltearoasFnamhpevraop.spec.tsx</span>  <span
       style="color: #5E636AFF">(5 tests)</span>
- <span style="color:#d75fff;">⛁</span> <span class="blur">src/apegs/DS/aCsmpanig/sCioasmpMniiagn/oismnanwosFiipCaglM/setst/oisulwmilnpfoos-.spec.tsx</span>  (1 test)
+ <span style="color:#d75fff;">⛁</span> <span class="blur">src/apegs/DS/aCsmpanig/sCioasmpMniiagn/oismnanwosFiipCaglM/setst/oisulwmilnpfoos-.spec.tsx</span>   <span
+      style="color: #5E636AFF">(1 test)</span>
  <span style="color:#d75fff;">⛁</span> <span class="blur">src/pegsa/SD/Cmasipnag/nmmySgCupramaai/ocpontemsn/aeerHd/nxied.spec.tsx</span>  <span
       style="color: #5E636AFF">(2 tests)</span>
  <span style="color:#d75fff;">⛁</span> <span class="blur">src/epasg/DS/asnmCpgai/SeanismgCappt/mSepCptagiuna/pmoFUFlowlor/PUptaxhgNltlotoeweF.spec.tsx</span>  <span
@@ -32,7 +33,8 @@
       style="color: #5E636AFF">(6 tests)</span>
  <span style="color:#d75fff;">⛁</span> <span class="blur">src/apegs/DS/Caiasmnpg/ppCesmantigSa/nutCapSapmeig/poFlFoomwlrU/_s_s_tet_/u-falol-mwlpioe.spec.tsx</span>  <span
       style="color: #5E636AFF">(2 tests)</span>
- <span style="color:#d75fff;">⛁</span> <span class="blur">src/doainm/lUolFpow/EFtptllUpnyiwAlorpoaov.spec.tsx</span>  (1 test)
+ <span style="color:#d75fff;">⛁</span> <span class="blur">src/doainm/lUolFpow/EFtptllUpnyiwAlorpoaov.spec.tsx</span>  <span
+      style="color: #5E636AFF">(1 test)</span>
  <span style="color:#d75fff;">⛁</span> <span class="blur">src/apseg/DS/iuoCmeitnsm/aytAlcsni/ebsMrme/gemeMsidnnrPeb/esrednPbMnmige.spec.tsx</span>  <span
       style="color: #5E636AFF">(2 tests)</span>
  <span style="color:#d75fff;">⛁</span> <span
@@ -54,14 +56,14 @@
  <span style="color:#d75fff;">⛁</span> <span class="blur">src/pgsae/SD/pnagamCsi/ayCnaraummpgimS/tomsnncpoe/woFl/oensmpotcn/opwolFlU/sulit.spec.tsx</span>  <span
       style="color: #5E636AFF">(4 tests)</span>
  <span style="color: #5E636AFF">Test Files</span>  <span style="font-weight:bold;"></span><span
-      style="font-weight:bold;color:lime;">66 passed</span><span style="font-weight:bold;"></span><span
-      style="color: #5E636AFF"> (66)</span>
+      style="font-weight:bold;color:lime;">25 passed</span><span style="font-weight:bold;"></span><span
+      style="color: #5E636AFF"> (25)</span>
       <span style="color: #5E636AFF">Tests</span>  <span style="font-weight:bold;"></span><span
-      style="font-weight:bold;color:lime;">435 passed</span><span style="font-weight:bold;"></span><span
-      style="color: #5e636a"> (435)</span>
+      style="font-weight:bold;color:lime;">108 passed</span><span style="font-weight:bold;"></span><span
+      style="color: #5e636a"> (108)</span>
    <span style="color: #5E636AFF">Start at</span>  <span>12:42:04</span>
    <span style="color: #5E636AFF">Duration</span>  <span>10.36s</span> <span style="color: #5E636AFF">(transform 32ms, setup 129.76s, collect 307.15s, tests 0ms, environment 1.31s, prepare 17.14s)</span>
 <span style="color:#d75fff;">[vCache]</span> <span
-      style="color:rgb(215 95 255 / 50%)">61/66 files read from cache</span></pre></div>
+      style="color:rgb(215 95 255 / 50%)">20/25 files read from cache</span></pre></div>
   </foreignObject>
 </svg>
