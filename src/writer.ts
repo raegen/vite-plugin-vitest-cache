@@ -16,21 +16,20 @@ const getResults = async (file: string): Promise<CacheEntry> => fs.stat(file)
 export default (): Plugin => ({
   name: 'v-cache:writer',
   async generateBundle(this: PluginContext, { dir }, bundle) {
-    for (const file in bundle) {
-      const output = bundle[file];
-
+    await Promise.all(Object.entries(bundle).map(async ([file, output]) => {
       delete bundle[file];
 
       if (output.type !== 'chunk') {
         return;
       }
 
-      const { isEntry, facadeModuleId, name, fileName: hash, viteMetadata } = output;
+      const { isEntry, facadeModuleId, name, fileName: hash } = output;
 
       if (isEntry) {
         const filePath = facadeModuleId.substring(facadeModuleId.indexOf(name));
         const fileName = path.join(filePath, hash);
         const resolved = path.resolve(dir, fileName);
+
         const { data } = await getResults(resolved);
 
         const { cost } = this.getModuleInfo(facadeModuleId).meta;
@@ -47,6 +46,6 @@ export default (): Plugin => ({
           }),
         });
       }
-    }
+    }));
   },
 })

@@ -2,12 +2,12 @@ name: Checks
 on:
   pull_request:
     branches:
-      - develop
+      - main
   workflow_dispatch:
 
 jobs:
   build:
-    name: 'Build & Release'
+    name: 'Run tests'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

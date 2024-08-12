@@ -1,9 +1,9 @@
-import { builtinModules } from 'node:module';
+import { isBuiltin } from 'node:module';
 import { createFilter, defineConfig, loadConfigFromFile } from 'vite';
 import writer from './writer';
 import { PluginContext } from 'rollup';
 
-const isExternal = createFilter(['**/node_modules/**', '**/*.(svg|png|jpg|jpeg|s?css)']);
+const isExternal = createFilter(['**/node_modules/**', /\.(svg|png|jpg|jpeg|s?css)$/]);
 
 const userConfig = loadConfigFromFile(
   {
@@ -55,9 +55,7 @@ const config = userConfig.then(async (config) =>
           moduleSideEffects: true,
         },
         preserveEntrySignatures: 'strict',
-        external: (source) => {
-          return builtinModules.includes(source) || isExternal(source);
-        },
+        external: (source) => isBuiltin(source) || isExternal(source),
         output: {
           format: 'module',
           preserveModules: true,
