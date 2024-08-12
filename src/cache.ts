@@ -1,6 +1,5 @@
 import fs from 'node:fs/promises';
 import { deserialize, serialize, SerializedRecord } from '@ungap/structured-clone';
-import { inject } from 'vitest';
 
 export interface CacheEntry {
   data: SerializedRecord;
@@ -9,18 +8,10 @@ export interface CacheEntry {
   timestamp: number;
 }
 
-declare module 'vitest' {
-  export interface ProvidedContext {
-    'v-cache': {
-      [key: string]: CacheEntry;
-    };
-  }
-}
-
 export class TaskCache<T extends { cache?: boolean }> {
-  store = inject('v-cache');
-
-  constructor(flag?: (cache: T) => T & { cache: true }) {
+  constructor(readonly store: { [key: string]: CacheEntry }, { flag }: {
+    flag?: (cache: T) => T & { cache: true }
+  } = {}) {
     if (flag) {
       this.flag = flag;
     }

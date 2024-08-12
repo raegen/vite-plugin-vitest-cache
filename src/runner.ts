@@ -1,17 +1,29 @@
 import { File, Task, updateTask, VitestRunner } from '@vitest/runner';
 import { VitestTestRunner } from 'vitest/runners';
-import { TaskCache } from './cache.js';
+import { TaskCache, CacheEntry } from './cache.js';
 import { format } from './util.js';
+import { inject } from 'vitest';
+import { CacheOptions } from './options.js';
+
+declare module 'vitest' {
+  export interface ProvidedContext {
+    'v-cache:data': {
+      [key: string]: CacheEntry;
+    };
+    'v-cache:config': Omit<CacheOptions, 'strategy'>
+  }
+}
 
 class CachedRunner extends VitestTestRunner implements VitestRunner {
-  private cache = new TaskCache<File>();
+  private cache = new TaskCache<File>(inject('v-cache:data'));
+  private options = inject('v-cache:config');
 
   shouldCache(task: Task): boolean {
-    return this.config.vCache.states.includes(task.result.state);
+    return this.options.states.includes(task.result.state);
   }
 
   shouldLog() {
-    return !this.config.vCache.silent;
+    return !this.options.silent;
   }
 
   async onBeforeCollect(paths: string[]) {
