@@ -10,12 +10,6 @@ declare module 'vite' {
   }
 }
 
-declare module 'vitest' {
-  export interface ResolvedConfig {
-    vCache: CacheOptions;
-  }
-}
-
 declare module '@vitest/runner' {
   export interface TaskBase {
     cache?: boolean;
