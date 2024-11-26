@@ -14,6 +14,12 @@ vCache provides test caching for [Vitest](https://github.com/vitest-dev/vitest).
 
 It uses the same toolkit used for building your sources to build the test files. Hashes of these files are then used for cache matching. When running the tests, only the test files without a cache-hit (test files affected by the latest code changes for example) are run, the rest are simply restored from cache.
 
+## How is this different from vitest `related`/`--changed`
+
+They are different tools with similar, albeit somewhat different goals/purposes.
+- `$ vitest related` (`--changed` is parametrized `related`) determines affected files based on imported paths
+- `vCache` determines affected files based on imported code
+
 ## Installation
 
 ```sh
