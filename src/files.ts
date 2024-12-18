@@ -1,6 +1,6 @@
 import { createVitest, GlobalSetupContext } from 'vitest/node';
 
-const convertToUserConfig = ({ shard, ...config }: GlobalSetupContext['config']) => ({
+const convertToUserConfig = ({ shard, cache, ...config }: GlobalSetupContext['config']) => ({
   ...config,
   shard: shard ? `${shard.index}/${shard.count}` : undefined,
 });

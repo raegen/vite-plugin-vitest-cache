@@ -1,5 +1,5 @@
 import type { Plugin } from 'vite';
-import type { InlineConfig } from 'vitest';
+import type { InlineConfig } from 'vitest/node';
 import { File } from '@vitest/runner';
 import { here } from './util.js';
 import { CacheOptions } from './options.js';
