@@ -8,18 +8,9 @@ export interface CacheEntry {
   timestamp: number;
 }
 
-export class TaskCache<T extends { cache?: boolean }> {
-  constructor(readonly store: { [key: string]: CacheEntry }, { flag }: {
-    flag?: (cache: T) => T & { cache: true }
-  } = {}) {
-    if (flag) {
-      this.flag = flag;
-    }
+export class TaskCache<T> {
+  constructor(readonly store: { [key: string]: CacheEntry }) {
   }
-
-  readonly flag = (cache: T) => {
-    return Object.assign(cache, { cache: true });
-  };
 
   cost(key: string) {
     const cache = this.store[key];
@@ -36,7 +27,11 @@ export class TaskCache<T extends { cache?: boolean }> {
       return null;
     }
 
-    return cache.data ? this.flag(deserialize(cache.data)) : null;
+    return cache.data ? deserialize(cache.data) : null;
+  }
+
+  has(key: string) {
+    return !!this.store[key]?.data;
   }
 
   async save(key: string, data: T) {

@@ -1,18 +1,21 @@
 import { File, Task, updateTask, VitestRunner } from '@vitest/runner';
 import { VitestTestRunner } from 'vitest/runners';
-import { CacheEntry, TaskCache } from './cache.js';
-import { format } from './util.js';
+import { TaskCache } from '../cache.js';
+import { format } from '../util.js';
 import { inject } from 'vitest';
-import { CacheOptions } from './options.js';
 
-declare module 'vitest' {
-  export interface ProvidedContext {
-    'v-cache:data': {
-      [key: string]: CacheEntry;
-    };
-    'v-cache:config': Omit<CacheOptions, 'strategy'>;
+const flagCached = <T extends Task>(task: T) => {
+  if (task.type === 'suite') {
+    task.tasks.forEach(flagCached);
   }
-}
+  task.name = `\b\b${format(`⛁`)} ${task.name}`;
+  task.result = {
+    ...task.result,
+    duration: 0,
+  };
+
+  return task;
+};
 
 class CachedRunner extends VitestTestRunner implements VitestRunner {
   private cache = new TaskCache<File>(inject('v-cache:data'));
@@ -40,9 +43,9 @@ class CachedRunner extends VitestTestRunner implements VitestRunner {
       if (cached) {
         paths.splice(paths.indexOf(test), 1);
         if (this.shouldLog()) {
-          cached.name = `\b\b${format(`⛁`)} ${cached.name}`;
-          cached.result.duration = 0;
+          flagCached(cached);
         }
+        // @ts-ignore
         updateTask(cached, this);
         restored.push(cached);
       }

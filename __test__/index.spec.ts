@@ -1,21 +1,30 @@
-import { beforeAll, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { InlineConfig, startVitest } from 'vitest/node';
 import vCache from '../src';
-import fs from 'node:fs/promises';
+import { stat, readdir, readFile, mkdir, writeFile, rm } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
+import { File, Suite, Task } from '@vitest/runner';
+
+const isPass = (task: Task | Suite | File) => {
+  if (task.type === 'suite') {
+    return task.tasks.every(isPass);
+  }
+
+  return task.result.state === 'pass';
+};
 
 const isCached = async (path: string) => {
   try {
-    await fs.stat(resolve(path));
-    return fs.readdir(resolve(path)).then((files) => Promise.all(files.map((file) => fs.readFile(resolve(path, file), 'utf-8').then(JSON.parse).then(({ data }) => !!data))).then((r) => r.some(Boolean)));
+    await stat(resolve(path));
+    return readdir(resolve(path)).then((files) => Promise.all(files.map((file) => readFile(resolve(path, file), 'utf-8').then(JSON.parse).then(({ data }) => !!data))).then((r) => r.some(Boolean)));
   } catch (e) {
     return false;
   }
 };
 
 const writeFileRecursive = async (path: string, data: string) => {
-  await fs.mkdir(dirname(path), { recursive: true });
-  await fs.writeFile(path, data);
+  await mkdir(dirname(path), { recursive: true });
+  await writeFile(path, data);
 };
 
 const run = async (config?: InlineConfig) => startVitest('test', undefined, {
@@ -23,7 +32,7 @@ const run = async (config?: InlineConfig) => startVitest('test', undefined, {
 }, {
   plugins: [vCache({
     dir: '__test__/.cache',
-    silent: true,
+    silent: false,
   })],
   test: {
     include: ['__test__/tests/*.mock.ts'],
@@ -33,9 +42,9 @@ const run = async (config?: InlineConfig) => startVitest('test', undefined, {
 }).then((vitest) => vitest.close().then(() => vitest));
 
 describe('v-cache', () => {
-  beforeAll(async () => {
-    if (await fs.stat(resolve('__test__/.cache')).catch(() => null)) {
-      await fs.rm(resolve('__test__/.cache'), { recursive: true });
+  beforeEach(async () => {
+    if (await stat(resolve('__test__/.cache')).catch(() => null)) {
+      await rm(resolve('__test__/.cache'), { recursive: true });
     }
   });
 
@@ -52,33 +61,48 @@ describe('v-cache', () => {
   });
 
   it('should restore cached tests from cache', async () => {
-    const vitest = await run();
-
-    const files = [...vitest.state.filesMap.values()].flatMap((files) => files);
+    let files = (await run()).state.getFiles();
 
     for (const file of files) {
-      if (file.result.state === 'pass') {
-        expect(file).toHaveProperty('cache', true);
+      expect(file.result).not.toHaveProperty('duration', 0);
+    }
+
+    const reference = Object.fromEntries(files.map((file) => [file.filepath, file]));
+
+    files = (await run()).state.getFiles();
+
+    for (const file of files) {
+      if (isPass(file)) {
+        expect(file.result).toHaveProperty('startTime', reference[file.filepath].result.startTime);
+        expect(file.result).toHaveProperty('duration', 0);
       } else {
-        expect(file).not.toHaveProperty('cache');
+        expect(file.result).not.toHaveProperty('startTime', reference[file.filepath].result.startTime);
+        expect(file.result).not.toHaveProperty('duration', 0);
       }
     }
   });
 
   it('should rerun only the tests affected by change', async () => {
-    await run();
+    const reference = Object.fromEntries((await run()).state.getFiles().map((file) => [file.filepath.match(/__test__.*$/)?.[0], file]));
 
     const timestamp = Date.now();
     await writeFileRecursive(resolve(`__test__/tests/deep/nested/dependency/variables/${timestamp}.ts`), `export default '${timestamp}';`);
 
-    const vitest = await run();
+    const files = Object.fromEntries((await run()).state.getFiles().flatMap((files) => files).map((file) => [file.filepath.match(/__test__.*$/)?.[0], file]));
 
-    const files = Object.fromEntries([...vitest.state.filesMap.values()].flatMap((files) => files).map((file) => [file.filepath.match(/__test__.*$/)?.[0], file]));
+    expect(files['__test__/tests/variable.mock.ts'].result).not.toHaveProperty('startTime', reference['__test__/tests/variable.mock.ts'].result.startTime);
+    expect(files['__test__/tests/variable.mock.ts'].result).not.toHaveProperty('duration', 0);
 
-    expect(files['__test__/tests/variable.mock.ts']).not.toHaveProperty('cache');
-    expect(files['__test__/tests/pass0.mock.ts']).toHaveProperty('cache', true);
-    expect(files['__test__/tests/pass1.mock.ts']).toHaveProperty('cache', true);
-    expect(files['__test__/tests/fail0.mock.ts']).not.toHaveProperty('cache');
-    expect(files['__test__/tests/fail1.mock.ts']).not.toHaveProperty('cache');
+    expect(files['__test__/tests/pass0.mock.ts'].result).toHaveProperty('startTime', reference['__test__/tests/pass0.mock.ts'].result.startTime);
+    expect(files['__test__/tests/pass0.mock.ts'].result).toHaveProperty('duration', 0);
+
+    expect(files['__test__/tests/pass1.mock.ts'].result).toHaveProperty('startTime', reference['__test__/tests/pass1.mock.ts'].result.startTime);
+    expect(files['__test__/tests/pass1.mock.ts'].result).toHaveProperty('duration', 0);
+
+    expect(files['__test__/tests/fail0.mock.ts'].result).not.toHaveProperty('startTime', reference['__test__/tests/fail0.mock.ts'].result.startTime);
+    expect(files['__test__/tests/fail0.mock.ts'].result).not.toHaveProperty('duration', 0);
+
+    expect(files['__test__/tests/fail1.mock.ts'].result).not.toHaveProperty('startTime', reference['__test__/tests/fail1.mock.ts'].result.startTime);
+    expect(files['__test__/tests/fail1.mock.ts'].result).not.toHaveProperty('duration', 0);
   });
 });

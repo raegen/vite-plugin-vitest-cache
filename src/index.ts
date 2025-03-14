@@ -1,8 +1,9 @@
 import type { Plugin } from 'vite';
 import type { InlineConfig } from 'vitest/node';
 import { File } from '@vitest/runner';
-import { here } from './util.js';
-import { CacheOptions } from './options.js';
+import { globalSetup, runner } from './util.js';
+import type { CacheOptions } from './options.js';
+import type { CacheEntry } from './cache.js';
 
 declare module 'vite' {
   export interface UserConfig {
@@ -10,9 +11,12 @@ declare module 'vite' {
   }
 }
 
-declare module '@vitest/runner' {
-  export interface TaskBase {
-    cache?: boolean;
+declare module 'vitest' {
+  export interface ProvidedContext {
+    'v-cache:data': {
+      [key: string]: CacheEntry;
+    };
+    'v-cache:config': Omit<CacheOptions, 'strategy'>;
   }
 }
 
@@ -24,6 +28,12 @@ declare module 'vitest/runners' {
   }
 }
 
+declare module 'vitest/node' {
+  export interface ResolvedConfig {
+    vCache: CacheOptions;
+  }
+}
+
 const defaults = {
   dir: '.tests',
   states: ['pass'],
@@ -32,14 +42,14 @@ const defaults = {
 
 export const vCache = (options?: CacheOptions): Plugin => ({
   name: 'vitest-cache',
-  config: async () => ({
+  config: () => ({
     test: {
       vCache: {
         ...defaults,
         ...options,
       },
-      runner: here('./runner'),
-      globalSetup: here('./setup'),
+      runner,
+      globalSetup,
     },
   }),
 });
