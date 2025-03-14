@@ -1,5 +1,5 @@
 import type { Plugin } from 'vite';
-import type { InlineConfig } from 'vitest/node';
+import { InlineConfig } from 'vitest/node';
 import { File } from '@vitest/runner';
 import { here } from './util.js';
 import { CacheOptions } from './options.js';
@@ -7,12 +7,6 @@ import { CacheOptions } from './options.js';
 declare module 'vite' {
   export interface UserConfig {
     test?: InlineConfig;
-  }
-}
-
-declare module '@vitest/runner' {
-  export interface TaskBase {
-    cache?: boolean;
   }
 }
 

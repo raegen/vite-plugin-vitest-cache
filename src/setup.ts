@@ -1,4 +1,4 @@
-import { GlobalSetupContext } from 'vitest/node';
+import { TestProject } from 'vitest/node';
 import { dirname } from 'node:path';
 import fs from 'node:fs/promises';
 import fg from 'fast-glob';
@@ -7,7 +7,6 @@ import { applyStrategy } from './strategy.js';
 import { CacheEntry } from './cache.js';
 import { CacheOptions } from './options.js';
 import { load } from './load.js';
-import { getFiles } from './files.js';
 
 declare module 'vitest/node' {
   export interface ResolvedConfig {
@@ -31,12 +30,12 @@ const createMeasurement = (action: string, silent?: boolean) => {
   };
 };
 
-export default async ({ config, provide }: GlobalSetupContext) => {
+export default async ({ config, provide, vitest }: TestProject) => {
   if (!config.vCache.silent) {
     console.log(format('[vCache]'), formatDim(await version));
   }
 
-  const files = await getFiles(config);
+  const files = await vitest.getRelevantTestSpecifications().then((specs) => specs.map((spec) => spec.moduleId));
 
   const building = createMeasurement('built hashes in', config.vCache.silent);
   const output = await load(files, config.vCache.dir);
