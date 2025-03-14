@@ -3,7 +3,7 @@ import { deep } from './deep';
 
 
 describe('passes 2', () => {
-  it('should pass', async () => {
+  it('should pass 2', async () => {
     expect(deep).toBe(deep);
   });
 });
