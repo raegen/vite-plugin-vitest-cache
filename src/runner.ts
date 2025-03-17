@@ -1,21 +1,16 @@
-import { File, Task, updateTask, VitestRunner } from '@vitest/runner';
-import { VitestTestRunner } from 'vitest/runners';
-import { TaskCache } from '../cache.js';
-import { format } from '../util.js';
-import { inject } from 'vitest';
+import { File, Task, updateTask, VitestRunner } from '@vitest2/runner';
+import { VitestTestRunner } from 'vitest2/runners';
+import { TaskCache } from './cache.js';
+import { flagCache } from './util.js';
+import { inject } from 'vitest2';
 
-const flagCached = <T extends Task>(task: T) => {
-  if (task.type === 'suite') {
-    task.tasks.forEach(flagCached);
+declare module 'vitest2/runners' {
+  export interface VitestTestRunner {
+    onCollected(files: File[]): unknown;
+
+    onAfterRunFiles(files: File[]): Promise<void>;
   }
-  task.name = `\b\b${format(`⛁`)} ${task.name}`;
-  task.result = {
-    ...task.result,
-    duration: 0,
-  };
-
-  return task;
-};
+}
 
 class CachedRunner extends VitestTestRunner implements VitestRunner {
   private cache = new TaskCache<File>(inject('v-cache:data'));
@@ -43,7 +38,7 @@ class CachedRunner extends VitestTestRunner implements VitestRunner {
       if (cached) {
         paths.splice(paths.indexOf(test), 1);
         if (this.shouldLog()) {
-          flagCached(cached);
+          flagCache(cached);
         }
         // @ts-ignore
         updateTask(cached, this);

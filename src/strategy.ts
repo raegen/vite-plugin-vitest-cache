@@ -1,4 +1,4 @@
-import type { CacheEntry } from './cache';
+import type { CacheEntry } from './cache.js';
 import fs from 'node:fs/promises';
 
 interface ExtendedCacheEntry extends CacheEntry {

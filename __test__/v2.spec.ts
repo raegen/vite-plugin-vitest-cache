@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, it } from 'vitest';
-import { InlineConfig, startVitest } from 'vitest/node';
-import vCache from '../src';
-import { stat, readdir, readFile, mkdir, writeFile, rm } from 'node:fs/promises';
+import { InlineConfig, startVitest } from 'vitest2/node';
+import { vCache } from '../src/v2';
+import { mkdir, readdir, readFile, rm, stat, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
-import { File, Suite, Task } from '@vitest/runner';
+import { File, Suite, Task } from '@vitest2/runner';
 
 const isPass = (task: Task | Suite | File) => {
   if (task.type === 'suite') {
@@ -27,24 +27,24 @@ const writeFileRecursive = async (path: string, data: string) => {
   await writeFile(path, data);
 };
 
+const dir = '__test__/.cache2';
+
 const run = async (config?: InlineConfig) => startVitest('test', undefined, {
   watch: false,
+  include: ['__test__/tests/*.mock.ts'],
+  reporters: [{}],
+  ...config,
 }, {
   plugins: [vCache({
-    dir: '__test__/.cache',
+    dir,
     silent: false,
-  })],
-  test: {
-    include: ['__test__/tests/*.mock.ts'],
-    reporters: [{}],
-    ...config,
-  },
+  }) as any],
 }).then((vitest) => vitest.close().then(() => vitest));
 
 describe('v-cache', () => {
   beforeEach(async () => {
-    if (await stat(resolve('__test__/.cache')).catch(() => null)) {
-      await rm(resolve('__test__/.cache'), { recursive: true });
+    if (await stat(resolve(dir)).catch(() => null)) {
+      await rm(resolve(dir), { recursive: true });
     }
   });
 
@@ -53,11 +53,11 @@ describe('v-cache', () => {
   }, async () => {
     await run();
 
-    expect(await isCached('__test__/.cache/pass0.mock.ts')).toBe(true);
-    expect(await isCached('__test__/.cache/pass1.mock.ts')).toBe(true);
-    expect(await isCached('__test__/.cache/variable.mock.ts')).toBe(true);
-    expect(await isCached('__test__/.cache/fail0.mock.ts')).toBe(false);
-    expect(await isCached('__test__/.cache/fail1.mock.ts')).toBe(false);
+    expect(await isCached(`${dir}/pass0.mock.ts`)).toBe(true);
+    expect(await isCached(`${dir}/pass1.mock.ts`)).toBe(true);
+    expect(await isCached(`${dir}/variable.mock.ts`)).toBe(true);
+    expect(await isCached(`${dir}/fail0.mock.ts`)).toBe(false);
+    expect(await isCached(`${dir}/fail1.mock.ts`)).toBe(false);
   });
 
   it('should restore cached tests from cache', async () => {
