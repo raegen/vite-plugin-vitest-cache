@@ -2,7 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { Plugin } from 'vite';
 import { PluginContext } from 'rollup';
-import { CacheEntry } from './cache';
+import { CacheEntry } from './cache.js';
 
 const getResults = async (file: string): Promise<CacheEntry> => fs.stat(file)
   .then(() => fs.readFile(file, {

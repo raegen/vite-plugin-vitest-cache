@@ -10,6 +10,7 @@
     "module": "ESNext",
     "moduleResolution": "node",
     "jsx": "react-jsx",
+    "resolveJsonModule": true,
     "types": [
       "vite/client",
       "vitest/config"

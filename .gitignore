@@ -1,6 +1,6 @@
 .idea
 node_modules
 dist
-__test__/.cache
+__test__/.cache*
 .DS_Store
 __test__/tests/deep/nested/dependency/variables/*
