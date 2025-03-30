@@ -5,9 +5,8 @@ import fs from 'node:fs/promises';
 import { CacheEntry } from './cache.js';
 import { applyStrategy } from './strategy.js';
 import type { ResolvedConfig } from 'vitest/node';
-import type { ResolvedConfig as V2ResolvedConfig } from 'vitest2/node';
 
-export const prune = async (output: { [k: string]: CacheEntry }, { vCache }: ResolvedConfig | V2ResolvedConfig) => {
+export const prune = async (output: { [k: string]: CacheEntry }, { vCache }: ResolvedConfig) => {
   const pruning = createMeasurement(`Pruned`, vCache.silent);
   const batches = Object.values(output).map(
     ({ path }) => fg(`${dirname(path)}/*`).then(

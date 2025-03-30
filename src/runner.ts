@@ -1,10 +1,10 @@
-import { File, Task, updateTask, VitestRunner } from '@vitest2/runner';
-import { VitestTestRunner } from 'vitest2/runners';
+import { File, Task, updateTask, VitestRunner } from '@vitest/runner';
+import { VitestTestRunner } from 'vitest/runners';
 import { TaskCache } from './cache.js';
 import { flagCache } from './util.js';
-import { inject } from 'vitest2';
+import { inject } from 'vitest';
 
-declare module 'vitest2/runners' {
+declare module 'vitest/runners' {
   export interface VitestTestRunner {
     onCollected(files: File[]): unknown;
 

@@ -1,4 +1,4 @@
-import { GlobalSetupContext } from 'vitest2/node';
+import { GlobalSetupContext } from 'vitest/node';
 import { createMeasurement, format, formatDim, version } from './util.js';
 import { CacheOptions } from './options.js';
 import { load } from './load.js';
@@ -6,15 +6,13 @@ import { getFiles } from './files.js';
 import { prune } from './prune.js';
 import type { CacheEntry } from './cache';
 
-export type {} from 'vitest2';
-
-declare module 'vitest2/node' {
+declare module 'vitest/node' {
   export interface ResolvedConfig {
     vCache: CacheOptions;
   }
 }
 
-declare module 'vitest2' {
+declare module 'vitest' {
   export interface ProvidedContext {
     'v-cache:data': {
       [key: string]: CacheEntry;

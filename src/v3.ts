@@ -1,5 +1,5 @@
 import type { Plugin, UserConfig } from 'vite';
-import { here } from './util.js';
+import { here, name } from './util.js';
 import type { CacheOptions } from './options';
 
 declare module 'vitest/node' {
@@ -19,7 +19,7 @@ const defaults = {
 };
 
 export const vCache = (options?: CacheOptions): Plugin => ({
-  name: 'vitest-cache',
+  name,
   config: (config) => ({
     test: {
       vCache: {
