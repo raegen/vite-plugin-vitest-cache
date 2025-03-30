@@ -1,9 +1,8 @@
 import { beforeEach, describe, expect, it } from 'vitest';
-import { InlineConfig, startVitest } from 'vitest2/node';
-import { vCache } from '../src/v2';
+import { InlineConfig, startVitest } from 'vitest/node';
 import { mkdir, readdir, readFile, rm, stat, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
-import { File, Suite, Task } from '@vitest2/runner';
+import { File, Suite, Task } from '@vitest/runner';
 
 const isPass = (task: Task | Suite | File) => {
   if (task.type === 'suite') {
@@ -29,17 +28,20 @@ const writeFileRecursive = async (path: string, data: string) => {
 
 const dir = '__test__/.cache2';
 
-const run = async (config?: InlineConfig) => startVitest('test', undefined, {
-  watch: false,
-  include: ['__test__/tests/*.mock.ts'],
-  reporters: [{}],
-  ...config,
-}, {
-  plugins: [vCache({
-    dir,
-    silent: false,
-  }) as any],
-}).then((vitest) => vitest.close().then(() => vitest));
+const run = async (config?: InlineConfig) => {
+  const { vCache } = await import('../src/v2');
+  return startVitest('test', undefined, {
+    watch: false,
+    include: ['__test__/tests/*.mock.ts'],
+    reporters: [{}],
+    ...config,
+  }, {
+    plugins: [vCache({
+      dir,
+      silent: false,
+    }) as any],
+  }).then((vitest) => vitest.close().then(() => vitest));
+}
 
 describe('v-cache', () => {
   beforeEach(async () => {
